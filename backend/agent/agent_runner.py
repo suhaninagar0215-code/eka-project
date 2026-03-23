@@ -1,15 +1,7 @@
-from backend.agent.sql_agent import get_sql_agent
+from backend.sql.sql_chain import run_sql_chain
 
 def run_agent(question: str):
     try:
-        agent = get_sql_agent()
-        response = agent.invoke({"input": question})
-        return response["output"]
-
+        return run_sql_chain(question)
     except Exception as e:
-        print("RAW ERROR:", e)
-
-        if "Could not parse LLM output" in str(e):
-            return " Output formatting issue, but query likely succeeded. Check logs above."
-
-        return f"Error : {str(e)}"
+        return f"Error: {str(e)}"
