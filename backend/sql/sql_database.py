@@ -4,6 +4,8 @@ from sqlalchemy import text
 import os
 from dotenv import load_dotenv
 from pathlib import Path
+import warnings
+from sqlalchemy import exc as sa_exc
 
 env_path = Path(__file__).resolve().parent.parent.parent / ".env"
 load_dotenv(dotenv_path=env_path, override=True)
@@ -14,6 +16,12 @@ def get_db_engine():
     global _engine
     if _engine is not None:
         return _engine
+
+    warnings.filterwarnings(
+        "ignore",
+        category=sa_exc.SAWarning,
+        message=".*Did not recognize type.*"
+    )
 
     connection_url = URL.create(
         drivername="mssql+pyodbc",
