@@ -42,6 +42,16 @@ def get_mini_llm():
         temperature=0,
         max_tokens=1000      
     )
+
+def get_llm_by_name(model_name: str):
+    if model_name == "gpt-4o":
+        return get_llm()
+    elif model_name == "gpt-4o-mini":
+        return get_mini_llm()
+    else:
+        raise ValueError(f"Unknown model: {model_name}")
+    
+    
 if __name__ == "__main__" :
     llm = get_llm()
     print("LLM loaded successfully:", llm.deployment_name)

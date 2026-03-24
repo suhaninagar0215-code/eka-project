@@ -5,6 +5,19 @@ from backend.agent.agent_runner import run_agent
 from backend.rag.rag_chain import get_rag_response
 from backend.rag.vector_store import load_vector_store
 
+def choose_model(route: str, question: str) -> str:
+    question = question.lower()
+
+    if route == "sql":
+        return "gpt-4o"  
+    if route == "rag":
+        if len(question) < 50:
+            return "gpt-4o-mini"
+        else:
+            return "gpt-4o"
+
+    return "gpt-4o"
+
 SQL_KEYWORDS = [
   
     "product", "products", "price", "cost", "stock", "inventory",
@@ -75,12 +88,14 @@ def route_question(question: str) -> dict:
         }
 
     route = classify_question(question)
+    model = choose_model(route, question)
+    print(f"Model selected: {model}")
     print(f"Router decision: {route.upper()}")
 
     if route in ("sql", "unknown"):
         try:
             print("Routing to: SQL Agent")
-            answer = run_agent(question)
+            answer = run_agent(question, model=model)
             return {
                 "answer": answer,
                 "source_type": "sql",
@@ -109,7 +124,7 @@ def route_question(question: str) -> dict:
                     "sources": []
                 }
 
-            result = get_rag_response(question, vectordb)
+            result = get_rag_response(question, vectordb, model=model)
             return {
                 "answer": result["answer"],
                 "source_type": "rag",

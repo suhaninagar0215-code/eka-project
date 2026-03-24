@@ -6,16 +6,12 @@ from backend.sql.sql_chain import run_sql_chain
 
 _agent = None
 
-def get_agent():
-    global _agent
-    if _agent is not None:
-        return _agent
-    _agent = get_sql_agent()
-    return _agent
+def get_agent(model: str):
+    return get_sql_agent(model)
 
-def run_agent(question: str) -> str:
+def run_agent(question: str, model: str = "gpt-4o") -> str:
     try:
-        agent = get_agent()
+        agent = get_agent(model)
         result = agent.invoke({"input": question})
         return result.get("output", "No answer returned.")
 

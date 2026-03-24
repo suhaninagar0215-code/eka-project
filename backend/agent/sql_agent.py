@@ -2,6 +2,7 @@ from langchain_community.agent_toolkits import SQLDatabaseToolkit
 from langchain_community.agent_toolkits.sql.base import create_sql_agent
 from langchain_core.tools import Tool
 from backend.llm.llm_provider import get_llm
+from backend.llm.llm_provider import get_llm_by_name
 from backend.sql.sql_chain import get_sql_database, clean_sql, validate_sql, run_query_with_retry, format_result
 import re
 import warnings
@@ -65,9 +66,9 @@ RESPONSE FORMAT:
 - Do not say "listed above" — always repeat the actual results
 """
 
-def get_sql_agent():
+def get_sql_agent(model: str = "gpt-4o"):
     try:
-        llm = get_llm()
+        llm = get_llm_by_name(model)
         print("LLM loaded")
 
         db = get_sql_database()
