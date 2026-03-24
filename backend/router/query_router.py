@@ -34,15 +34,26 @@ SQL_KEYWORDS = [
 ]
 
 RAG_KEYWORDS = [
+   
     "policy", "policies", "procedure", "procedures", "guideline", "guidelines",
-    "document", "handbook", "manual", "report",
+    "document", "handbook", "manual", "report","mentorship",
     
     "leave", "vacation", "holiday", "sick", "benefit", "benefits",
     "employee", "employees", "hr", "human resource",
     "salary", "compensation", "appraisal", "performance",
-
+ 
     "rule", "rules", "regulation", "compliance", "code of conduct",
     "onboarding", "training", "termination", "resignation",
+
+    "bonus", "bonuses", "incentive", "incentives",
+    "allowance", "allowances", "reimbursement",
+    "insurance", "medical", "health", "dental",
+    "pension", "provident", "gratuity",
+    "offer", "offers", "company offer",
+    "working hours", "overtime", "remote", "work from home",
+    "dress code", "conduct", "ethics",
+    "promotion", "increment", "raise",
+    "does the company", "does company",
 ]
 
 def classify_question(question: str) -> str:
@@ -141,7 +152,7 @@ def route_question(question: str) -> dict:
 
 if __name__ == "__main__":
     test_questions = [
-        "Show me top 5 products by price",       #
+        "Show me top 5 products by price",       
         "What is the leave policy?",              
         "How many customers do we have?",         
         "What are the employee benefits?",        

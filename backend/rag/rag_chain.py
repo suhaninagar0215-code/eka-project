@@ -14,13 +14,18 @@ def get_rag_response(query: str, vectordb, model: str = "gpt-4o-mini") -> dict:
     retriever = vectordb.as_retriever(
         search_type="mmr",          
         search_kwargs={
-            "k": 5,                    
-            "fetch_k": 20,             
-            "lambda_mult": 0.7,        
+            "k": 8,                    
+            "fetch_k": 40,             
+            "lambda_mult": 0.5,        
         }
     )
 
     docs = retriever.invoke(query)
+
+    print("\n🔍 Retrieved Documents:\n")
+    for i, doc in enumerate(docs):
+        print(f"\n--- Doc {i+1} ---")
+        print(doc.page_content[:500])
 
     if not docs:
         return {

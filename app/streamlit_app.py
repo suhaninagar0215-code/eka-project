@@ -78,7 +78,7 @@ with st.sidebar:
     """)
 
     st.markdown("---")
-    if st.button("🗑️ Clear Chat", use_container_width=True):
+    if st.button("Clear Chat", use_container_width=True):
         st.session_state.messages = []
         st.rerun()
 
