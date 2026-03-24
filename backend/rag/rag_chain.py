@@ -1,9 +1,9 @@
 import warnings
 warnings.filterwarnings("ignore")
 from pathlib import Path
-from backend.llm.llm_provider import get_mini_llm
+from backend.llm.llm_provider import get_llm_by_name
 
-def get_rag_response(query: str, vectordb) -> dict:
+def get_rag_response(query: str, vectordb, model: str = "gpt-4o-mini") -> dict:
 
     if not query or not query.strip():
         return {
@@ -37,7 +37,11 @@ def get_rag_response(query: str, vectordb) -> dict:
         )
 
     context = "\n\n".join(context_parts)
-    llm = get_mini_llm()
+    MAX_CONTEXT_LENGTH = 4000
+    if len(context) > MAX_CONTEXT_LENGTH:
+        context = context[:MAX_CONTEXT_LENGTH]
+    llm = get_llm_by_name(model)
+    print(f"[RAG] Using model: {model}")
 
     prompt = f"""You are an Enterprise Knowledge Assistant.
 Your job is to answer questions based strictly on the provided document context.
@@ -89,7 +93,7 @@ if __name__ == "__main__":
     from backend.rag.vector_store import load_vector_store
 
     db = load_vector_store()
-    result = get_rag_response("What is the leave policy?", db)
+    result = get_rag_response("What is the leave policy?", db, model="gpt-4o-mini")
 
     print(f"\nAnswer:\n{result['answer']}")
     print(f"\nSources:")
