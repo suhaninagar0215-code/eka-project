@@ -1,7 +1,7 @@
 import warnings
 warnings.filterwarnings("ignore")
 
-from backend.agent.agent_runner import run_agent
+from backend.router.query_router import route_question  
 
 def main():
     print("\nEnterprise Knowledge Assistant Ready.")
@@ -17,8 +17,14 @@ def main():
             print("Goodbye.")
             break
 
-        answer = run_agent(question)
-        print(f"\nAssistant:\n{answer}\n")
+        result = route_question(question)
+
+        print(f"\nAssistant [{result['source_type'].upper()}]:")
+        print(result['answer'])
+
+        if result.get('sources'):
+            print(f"\nSources: {', '.join(result['sources'])}")
+
         print("-" * 60)
 
 if __name__ == "__main__":
