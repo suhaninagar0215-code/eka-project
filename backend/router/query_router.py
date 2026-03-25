@@ -38,10 +38,7 @@ RAG_KEYWORDS = [
 
 # Keyword Router 
 def keyword_classify(question: str) -> str:
-    """
-    Returns: 'sql', 'rag', or 'unknown'
-    Fast keyword scoring — runs in microseconds, no API call needed.
-    """
+    
     question_lower = question.lower().strip()
     sql_score = sum(1 for kw in SQL_KEYWORDS if kw in question_lower)
     rag_score = sum(1 for kw in RAG_KEYWORDS if kw in question_lower)
@@ -59,11 +56,6 @@ def keyword_classify(question: str) -> str:
 
 #  LLM Router 
 def llm_classify(question: str) -> str:
-    """
-    Uses GPT-4o-mini to classify ambiguous questions.
-    Only called when keyword router returns 'unknown' or scores are tied.
-    Returns: 'sql' or 'rag'
-    """
     try:
         llm = get_mini_llm()
 
@@ -109,11 +101,7 @@ Answer:"""
 
 #  Combined Router 
 def classify_question(question: str) -> str:
-    """
-    Two-stage routing:
-    Stage 1 — keyword scoring (fast, free)
-    Stage 2 — LLM classification (smart, only when needed)
-    """
+
     keyword_result = keyword_classify(question)
 
     question_lower = question.lower().strip()
@@ -129,10 +117,7 @@ def classify_question(question: str) -> str:
 
 
 def choose_model(route: str, question: str) -> str:
-    """
-    SQL always uses gpt-4o — needs strong reasoning for complex queries.
-    RAG uses gpt-4o-mini for short questions, gpt-4o for complex ones.
-    """
+
     if route == "sql":
         return "gpt-4o"
     if route == "rag":
