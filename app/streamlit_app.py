@@ -9,6 +9,14 @@ import streamlit as st
 from backend.router.query_router import route_question
 from backend.auth.auth_service import authenticate_user, register_user
 
+
+st.set_page_config(
+    page_title="EKA",
+    page_icon="🧠",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
 def login_ui():
     col1, col2, col3 = st.columns([1, 1.5, 1])
 
@@ -47,26 +55,13 @@ def login_ui():
 
         st.markdown('</div>', unsafe_allow_html=True)
 
-st.set_page_config(
-    page_title="EKA",
-    page_icon="🧠",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
 
 st.markdown("""
 <style>
     [data-testid="stAppViewContainer"] {
-        background: linear-gradient(135deg, #ffe4e6, #fff7ed);
+        background: linear-gradient(135deg, #f9fafb, #f1f5f9);
+        background-attachment: fixed;
     }
-
-    .block-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    height: 100vh;
-    }
-
 
     .login-title {
         font-size: 32px;
@@ -98,15 +93,6 @@ st.markdown("""
         justify-content: center;
     }
 
-    header {
-        visibility: hidden;
-        height: 0px;
-    }
-
-    [data-testid="stToolbar"] {
-        display: none;
-    }
-
     [data-testid="stDecoration"] {
         display: none;
     }
@@ -136,7 +122,6 @@ st.markdown("""
         margin-right: 20%;
         border: 1px solid #f0f0f0;
     }
-
     .sql-badge {
         background-color: #1f77b4;
         color: white;
@@ -182,7 +167,7 @@ st.markdown("""
 
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
-    header {visibility: hidden;}
+
 </style>
 """, unsafe_allow_html=True)
 if "authenticated" not in st.session_state:
@@ -191,6 +176,7 @@ if "authenticated" not in st.session_state:
 if not st.session_state.authenticated:
     login_ui()
     st.stop()
+
 with st.sidebar:
     if "user" in st.session_state:
         st.markdown(f"👤 Logged in as: **{st.session_state.user}**")

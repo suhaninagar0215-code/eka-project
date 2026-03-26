@@ -70,3 +70,4 @@ def register_user(username, password):
         if conn:
             conn.close()
 
+
