@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 from pathlib import Path
 import warnings
 from sqlalchemy import exc as sa_exc
+from sqlalchemy.orm import sessionmaker
+from backend.sql.base import Base
 
 env_path = Path(__file__).resolve().parent.parent.parent / ".env"
 load_dotenv(dotenv_path=env_path, override=True)
@@ -47,6 +49,19 @@ def get_db_engine():
 
     return _engine
 
+def init_db():
+    from backend.sql.model.chat_history_model import ChatHistory
+    Base.metadata.create_all(bind=get_db_engine())
+
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=get_db_engine()
+)
+
+def get_db_session():
+    return SessionLocal()
+
 def test_connection():
     try:
         engine = get_db_engine()
@@ -58,4 +73,5 @@ def test_connection():
 
 
 if __name__ == "__main__":
+    init_db()
     test_connection()

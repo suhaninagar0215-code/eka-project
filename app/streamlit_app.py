@@ -8,7 +8,12 @@ warnings.filterwarnings("ignore")
 import streamlit as st
 from backend.router.query_router import route_question
 from backend.auth.auth_service import authenticate_user, register_user
+from backend.sql.services.chat_history_service import save_message, load_chat_history
+from backend.sql.sql_database import get_db_session, init_db
 
+init_db()
+
+db_session = get_db_session()
 
 st.set_page_config(
     page_title="EKA",
@@ -177,6 +182,16 @@ if not st.session_state.authenticated:
     login_ui()
     st.stop()
 
+if "user" in st.session_state:
+    chat_history = load_chat_history(st.session_state.user, db_session)
+
+    st.session_state.messages = [
+        {
+            "role": chat.role,
+            "content": chat.message
+        } for chat in chat_history
+    ]
+
 with st.sidebar:
     if "user" in st.session_state:
         st.markdown(f"👤 Logged in as: **{st.session_state.user}**")
@@ -274,7 +289,7 @@ if prompt := st.chat_input("Ask me anything about your data or documents..."):
         "role": "user",
         "content": prompt
     })
-
+    save_message(st.session_state.user, "user", prompt, db_session)
     with st.chat_message("user"):
         st.markdown(prompt)
 
@@ -316,3 +331,4 @@ if prompt := st.chat_input("Ask me anything about your data or documents..."):
         "sources": result.get("sources", []),
         "router_method": result.get("router_method", "")  
     })
+    save_message(st.session_state.user, "assistant", result["answer"], db_session)
