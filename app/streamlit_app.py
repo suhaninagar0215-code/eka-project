@@ -195,7 +195,7 @@ if "user" in st.session_state:
 with st.sidebar:
     if "user" in st.session_state:
         st.markdown(f"👤 Logged in as: **{st.session_state.user}**")
-    st.image("https://img.icons8.com/color/96/brain.png", width=80)
+    st.image("https://img.icons8.com/color/96/brain.png", width=50)
     st.title("Enterprise Knowledge Assistant")
     st.markdown("---")
 
@@ -221,13 +221,6 @@ with st.sidebar:
         st.rerun()
     st.markdown("---")
 
-    st.markdown("### Router Mode")
-    st.markdown("""
-    - ⚡ **Keywords** — fast, free
-    - 🧠 **LLM** — smart, for edge cases
-    """)
-
-    st.markdown("---")
 
     if st.button("🗑️ Clear Chat", use_container_width=True):
         st.session_state.messages = []

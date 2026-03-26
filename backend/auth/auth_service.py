@@ -1,15 +1,17 @@
 import pyodbc
+import os
+import bcrypt  
 
 def get_connection():
     conn = pyodbc.connect(
-        "DRIVER={ODBC Driver 18 for SQL Server};"
-        "SERVER=suhani-genai-sql-server.database.windows.net;"
-        "DATABASE=AdventureWorksDB;"
-        "UID=sqladmin;"
-        "PWD=S_151003;"
-        "Encrypt=yes;"
-        "TrustServerCertificate=yes;"
-        "Connection Timeout=30;"
+        f"DRIVER={{ODBC Driver 18 for SQL Server}};"
+        f"SERVER={os.getenv('SQL_SERVER')};"
+        f"DATABASE={os.getenv('SQL_DATABASE')};"
+        f"UID={os.getenv('SQL_USERNAME')};"
+        f"PWD={os.getenv('SQL_PASSWORD')};"
+        f"Encrypt=yes;"
+        f"TrustServerCertificate=yes;"
+        f"Connection Timeout=30;"
     )
     return conn
 
@@ -21,24 +23,23 @@ def authenticate_user(username, password):
 
         query = "SELECT username, password FROM dbo.Users WHERE username = ?"
         cursor.execute(query, (username.strip(),))
-
         row = cursor.fetchone()
+
         if not username or not password:
             return False, "Username and password cannot be empty"
-        print("INPUT:", username, password)
-        print("DB ROW:", row)
 
         if row:
-            db_username, db_password = row
-            print("MATCH:", db_password.strip(), "==", password.strip())
+            db_username, db_hashed_password = row
+            if bcrypt.checkpw(password.strip().encode("utf-8"), db_hashed_password.strip().encode("utf-8")):
+                return True, "Login successful"
+            else:
+                return False, "Invalid password"
 
-            return db_password.strip() == password.strip()
-
-        return False
+        return False, "User not found"
 
     except Exception as e:
         print("ERROR:", str(e))
-        return False
+        return False, str(e)
 
     finally:
         if conn:
@@ -53,14 +54,17 @@ def register_user(username, password):
         cursor.execute("SELECT * FROM dbo.Users WHERE username = ?", (username,))
         if cursor.fetchone():
             return False, "User already exists"
+
         if not username or not password:
             return False, "Username and password cannot be empty"
+
+        hashed_password = bcrypt.hashpw(password.strip().encode("utf-8"), bcrypt.gensalt())
+
         cursor.execute(
             "INSERT INTO dbo.Users (username, password) VALUES (?, ?)",
-            (username, password)
+            (username.strip(), hashed_password.decode("utf-8"))
         )
         conn.commit()
-
         return True, "User created successfully"
 
     except Exception as e:
@@ -69,5 +73,3 @@ def register_user(username, password):
     finally:
         if conn:
             conn.close()
-
-
