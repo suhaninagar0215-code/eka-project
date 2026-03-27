@@ -16,54 +16,61 @@ def safe_query_tool(db):
             result = run_query_with_retry(validated)
             return format_result(result)
         except ValueError as e:
-           
             return f"QUERY_BLOCKED: {str(e)}. Rewrite the query using only SELECT."
         except Exception as e:
-           
-            return f"QUERY_ERROR: {str(e)}. Check table names and column names and retry."
+            return f"QUERY_ERROR: {str(e)}. Check table/column names and retry."
 
     return Tool(
         name="sql_db_query",
         func=run,
         description=(
-            "Execute a SQL SELECT query against the SalesLT database. "
-            "Input must be a raw SQL query with NO markdown, NO backticks. "
-            "Only SELECT queries are allowed. "
-            "Always qualify table names: SalesLT.TableName. "
-            "Use TOP instead of LIMIT. "
-            "Never select: ThumbNailPhoto, rowguid, ModifiedDate, ThumbnailPhotoFileName."
+            "Execute a SQL SELECT query against the enterprise database. "
+            "Available tables: employees, departments, salaries, job_history. "
+            "Use correct column names. "
+            "Only SELECT queries allowed. "
+            "Use TOP instead of LIMIT (SQL Server)."
         )
     )
 
-SYSTEM_PROMPT = """You are an expert SQL Agent for an Enterprise Knowledge Assistant.
-You work with Microsoft SQL Server, SalesLT schema (AdventureWorks database).
+SYSTEM_PROMPT = """
+You are an expert SQL Agent for an Enterprise Knowledge Assistant.
+
+DATABASE SCHEMA:
+
+employees(id, first_name, last_name, department_id, hire_date, salary)
+departments(id, department_name)
+salaries(id, employee_id, salary, effective_date)
+job_history(id, employee_id, department_id, start_date, end_date)
 
 YOUR JOB:
 - Understand the user's question
-- Use available tools to explore the schema if needed
-- Write correct, optimized SQL
-- Return the query results clearly
+- Write correct SQL queries
+- Use joins where required
+- Return clear answers
 
-STRICT SQL RULES:
+STRICT RULES:
 - Only SELECT queries allowed
-- Always prefix tables: SalesLT.TableName
-- Use TOP N instead of LIMIT N (this is SQL Server, not MySQL)
-- Never select binary/blob columns: ThumbNailPhoto, rowguid, ModifiedDate, ThumbnailPhotoFileName
-- For JOINs, always use explicit JOIN syntax, never implicit comma joins
+- Use TOP instead of LIMIT (SQL Server)
+- Use proper JOINs (no implicit joins)
 
-TOOL USAGE RULES:
-- Use sql_db_list_tables FIRST if you are unsure which tables exist
-- Use sql_db_schema to inspect specific table columns before writing SQL
-- Use sql_db_query to execute your final SQL
-- If sql_db_query returns QUERY_ERROR, read the error, fix the SQL, and retry
-- If sql_db_query returns QUERY_BLOCKED, rewrite without the forbidden keyword
-- Never give up after one error — always attempt self-correction
+LOGIC RULES:
+- Latest salary → use MAX(effective_date)
+- Current department → WHERE end_date IS NULL
+- Always join employees with departments using department_id
+- Use salaries table for salary-related queries
+- If user asks about salary → use salaries table
+- If user asks about department → use departments or job_history
+- employees.id = salaries.employee_id
+- employees.department_id = departments.id
 
-RESPONSE FORMAT:
-- After getting results, present them clearly
-- Include the row count
-- Do not expose raw SQL to the user in the final answer
-- Do not say "listed above" — always repeat the actual results
+TOOL USAGE:
+- Use sql_db_query to execute queries
+- If error occurs, fix and retry
+
+FINAL OUTPUT:
+- Show results clearly
+- Include number of rows
+- Do NOT show SQL query
 """
 
 def get_sql_agent(model: str = "gpt-4o"):
@@ -97,5 +104,5 @@ def get_sql_agent(model: str = "gpt-4o"):
      
 if __name__ == "__main__":
     agent = get_sql_agent()
-    result = agent.invoke({"input": "Show me the top 5 products by list price"})
+    result = agent.invoke({"input": "Show top 5 highest paid employees"})
     print("\nFINAL ANSWER:\n", result.get("output", "No output"))

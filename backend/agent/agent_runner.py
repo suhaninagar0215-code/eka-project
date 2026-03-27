@@ -7,7 +7,10 @@ from backend.sql.sql_chain import run_sql_chain
 _agent = None
 
 def get_agent(model: str):
-    return get_sql_agent(model)
+    global _agent
+    if _agent is None:
+        _agent = get_sql_agent(model)
+    return _agent
 
 def run_agent(question: str, model: str = "gpt-4o") -> str:
     try:
@@ -26,9 +29,11 @@ def run_agent(question: str, model: str = "gpt-4o") -> str:
 
 if __name__ == "__main__":
     questions = [
-        "Show me top 5 products by list price",
-        "How many customers do we have?",
-        "What are the top 3 selling products by total revenue?",
+        "Show top 5 highest paid employees",
+        "Which department has most employees?",
+        "Show current department of all employees",
+        "Who has highest salary?",
+        "List employees hired after 2021"
     ]
     for q in questions:
         print(f"\nQ: {q}")

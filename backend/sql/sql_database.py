@@ -40,11 +40,12 @@ def get_db_engine():
 
     _engine = create_engine(
         connection_url,
-        pool_size=5,          
-        max_overflow=10,       
-        pool_timeout=30,      
-        pool_recycle=1800,     
-        pool_pre_ping=True,    
+        pool_size=5,
+        max_overflow=10,
+        pool_timeout=30,
+        pool_recycle=1800,
+        pool_pre_ping=True,
+        echo=False
     )
 
     return _engine

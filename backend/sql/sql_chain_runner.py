@@ -22,36 +22,36 @@ def run_sql_query(question: str):
 
     print("Fetching schema...")
     schema = db.get_table_info(
-        table_names=["Customer", "Product", "SalesOrderHeader", "SalesOrderDetail"]
+        table_names=["employees", "departments", "salaries", "job_history"]
     )
 
     prompt = f"""
-    You are an expert SQL developer.
+You are an expert SQL developer working with an enterprise HR database.
 
-    Given the database schema below, write a SQL query.
+DATABASE TABLES:
+- employees(id, first_name, last_name, department_id, hire_date, salary)
+- departments(id, department_name)
+- salaries(id, employee_id, salary, effective_date)
+- job_history(id, employee_id, department_id, start_date, end_date)
 
-    Rules:
-    - Use only tables from the schema
-    - Use correct table relationships
-    - Limit results to TOP 5 unless specified
-    - Do NOT use SELECT *
-    - Avoid binary/image columns
-    - Select only relevant columns
-    - Use Microsoft SQL Server syntax
-    - NEVER use ``` or markdown formatting
-    - ONLY return plain SQL query
-    - If unsure, make best logical assumption
-    - Do not explain, only return SQL query
-    - NEVER include ``` or ```sql in output
-    - Return only raw SQL query
+RULES:
+- Use only these tables
+- Use proper JOINs
+- Use TOP instead of LIMIT
+- Do NOT use SELECT *
+- Only return raw SQL query
+- No explanations
+- employees.id joins with salaries.employee_id
+- employees.id = salaries.employee_id
+- employees.department_id = departments.id
 
-    Schema:
-    {schema}
+LOGIC:
+- Latest salary → MAX(effective_date)
+- Current department → WHERE end_date IS NULL
 
-    Question:
-    {question}
-    """
-    print("\n Cleaned SQL:\n", sql_query)
+Question:
+{question}
+"""
     print("Sending to LLM...")
     response = llm.invoke(prompt).content
 

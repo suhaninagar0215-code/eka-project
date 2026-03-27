@@ -14,8 +14,14 @@ def get_sql_database():
     engine = get_db_engine()
     _db = SQLDatabase(
         engine,
-        schema="SalesLT",
-        sample_rows_in_table_info=2,
+        schema="dbo",   
+        include_tables=[   
+            "employees",
+            "departments",
+            "salaries",
+            "job_history"
+        ],
+        sample_rows_in_table_info=3,
         max_string_length=300,
         view_support=False,
     )
@@ -101,20 +107,34 @@ def run_sql_chain(question: str) -> str:
     schema = db.get_table_info()
 
     prompt = f"""
-You are a SQL expert working with Microsoft SQL Server (SalesLT schema).
+You are a SQL expert working with Microsoft SQL Server.
 
 DATABASE SCHEMA:
 {schema}
 
+AVAILABLE TABLES:
+- employees(id, first_name, last_name, department_id, hire_date, salary)
+- departments(id, department_name)
+- salaries(id, employee_id, salary, effective_date)
+- job_history(id, employee_id, department_id, start_date, end_date)
+
 STRICT RULES:
 - Only generate SELECT queries
 - Never use DELETE, UPDATE, INSERT, DROP, TRUNCATE, EXEC
-- Return ONLY the SQL query — no explanation, no markdown, no backticks
-- Always qualify table names with schema: SalesLT.TableName
-- Use TOP instead of LIMIT for SQL Server
-- NEVER select these columns under any circumstance: ThumbNailPhoto, rowguid, ModifiedDate, ThumbnailPhotoFileName
-- Always include the Name column when selecting from Product table
-- If user asks for "all columns" or uses *, explicitly list all columns EXCEPT the banned ones above
+- Return ONLY the SQL query — no explanation, no markdown
+- Use TOP instead of LIMIT
+- Use proper JOINs
+- employees.id joins with salaries.employee_id
+- employees.id = salaries.employee_id
+- employees.department_id = departments.id
+
+
+LOGIC RULES:
+- Latest salary → MAX(effective_date)
+- Current department → WHERE end_date IS NULL
+- Use salaries table for salary-related queries
+- Use job_history for department history
+- employees.id joins with salaries.employee_id
 
 Question: {question}
 
@@ -139,5 +159,5 @@ SQL Query:
     return formatted
 
 if __name__ == "__main__":
-    output = run_sql_chain("Show me the top 5 customers by total order amount")
+    output = run_sql_chain("Show top 5 highest paid employees")
     print(output)

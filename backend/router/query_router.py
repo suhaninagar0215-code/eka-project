@@ -8,31 +8,32 @@ from backend.llm.llm_provider import get_mini_llm
 
 
 SQL_KEYWORDS = [
-    "product", "products", "price", "cost", "stock", "inventory",
-    "customer", "customers", "client", "clients",
-    "order", "orders", "sales", "revenue", "total", "purchase",
-    "salesperson", "sales person",
-    "top", "list", "show", "how many", "count", "average", "sum",
-    "highest", "lowest", "most", "least", "best", "worst",
-    "compare", "between", "filter", "find", "get",
+    "employee", "employees",
+    "salary", "salaries",
+    "department", "departments",
+    "job", "history",
+    "hire", "joining",
+    "top", "highest", "lowest",
+    "count", "average", "sum",
+    "list", "show", "find", "get",
+    "which", "who"
 ]
 
 RAG_KEYWORDS = [
-    "policy", "policies", "procedure", "procedures", "guideline", "guidelines",
-    "document", "handbook", "manual", "report", "mentorship",
-    "leave", "vacation", "holiday", "sick", "benefit", "benefits",
-    "employee", "employees", "hr", "human resource",
-    "salary", "compensation", "appraisal", "performance",
-    "rule", "rules", "regulation", "compliance", "code of conduct",
-    "onboarding", "training", "termination", "resignation",
-    "bonus", "bonuses", "incentive", "incentives",
-    "allowance", "allowances", "reimbursement",
-    "insurance", "medical", "health", "dental",
-    "pension", "provident", "gratuity",
-    "working hours", "overtime", "remote", "work from home",
-    "dress code", "conduct", "ethics",
-    "promotion", "increment", "raise",
-    "does the company", "does company",
+    "policy", "policies", "procedure", "guideline",
+    "document", "handbook", "manual",
+    "leave", "vacation", "holiday", "sick",
+    "benefit", "benefits",
+    "hr", "human resource",
+    "rule", "rules", "compliance",
+    "onboarding", "training", "termination",
+    "resignation",
+    "bonus", "incentive",
+    "insurance", "medical",
+    "working hours", "overtime",
+    "dress code", "ethics",
+    "promotion", "increment",
+    "does the company"
 ]
 
 
@@ -61,24 +62,36 @@ def llm_classify(question: str) -> str:
 
         prompt = f"""You are a query router for an Enterprise Knowledge Assistant.
 
-The system has two data sources:
-1. SQL DATABASE — Contains structured business data:
-   - Products (names, prices, costs, categories)
-   - Customers (names, contacts, companies)
-   - Sales Orders (order details, quantities, revenue)
-   Use SQL for: counts, aggregations, lists, comparisons of business data
+DATA SOURCES:
 
-2. DOCUMENT KNOWLEDGE BASE — Contains company HR documents:
-   - HR policies, leave policies, employee handbooks
-   - Benefits, bonuses, incentives, compensation guidelines
-   - Company rules, code of conduct, compliance documents
-   Use RAG for: policy questions, HR questions, company guidelines
+1. SQL DATABASE — contains structured HR data:
+   - employees (name, department, salary, hire date)
+   - departments
+   - salaries (history)
+   - job_history
+   Use SQL for:
+   - employee data
+   - salary queries
+   - department queries
+   - counts, lists, aggregations
 
-Classify this question into exactly one category.
-Reply with ONLY one word: SQL or RAG
+2. DOCUMENT KNOWLEDGE BASE — contains HR policies:
+   - leave policy
+   - benefits
+   - company rules
+   - HR guidelines
+   Use RAG for:
+   - policy questions
+   - HR rules
+   - benefits explanation
+
+RULE:
+- If question involves data (employees, salary, department) → SQL
+- If question involves policy or explanation → RAG
+
+Reply ONLY: SQL or RAG
 
 Question: {question}
-
 Answer:"""
 
         response = llm.invoke(prompt)
@@ -101,18 +114,26 @@ Answer:"""
 
 #  Combined Router 
 def classify_question(question: str) -> str:
-
-    keyword_result = keyword_classify(question)
-
     question_lower = question.lower().strip()
+
+    if any(word in question_lower for word in ["employee", "salary", "department"]):
+        print("Rule-based override → SQL")
+        return "sql"
+
     sql_score = sum(1 for kw in SQL_KEYWORDS if kw in question_lower)
     rag_score = sum(1 for kw in RAG_KEYWORDS if kw in question_lower)
 
-    if abs(sql_score - rag_score) >= 2:
-        print(f"Clear keyword winner: {keyword_result.upper()} — skipping LLM router")
-        return keyword_result
+    print(f"Keyword scores — SQL: {sql_score} | RAG: {rag_score}")
 
-    print(f"Ambiguous question — using LLM router...")
+    if sql_score > rag_score:
+        print("Keyword decision → SQL")
+        return "sql"
+
+    if rag_score > sql_score:
+        print("Keyword decision → RAG")
+        return "rag"
+
+    print("Ambiguous or no keywords — using LLM router...")
     return llm_classify(question)
 
 

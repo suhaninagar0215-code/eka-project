@@ -11,9 +11,14 @@ from backend.auth.auth_service import authenticate_user, register_user
 from backend.sql.services.chat_history_service import save_message, load_chat_history
 from backend.sql.sql_database import get_db_session, init_db
 
-init_db()
+if "db_initialized" not in st.session_state:
+    init_db()
+    st.session_state.db_initialized = True
 
-db_session = get_db_session()
+if "db_session" not in st.session_state:
+    st.session_state.db_session = get_db_session()
+
+db_session = st.session_state.db_session
 
 st.set_page_config(
     page_title="EKA",
@@ -43,12 +48,15 @@ def login_ui():
 
         if option == "Login":
             if st.button("Login", use_container_width=True):
-                if authenticate_user(username, password):
+                success, message = authenticate_user(username, password)
+
+                if success:
                     st.session_state.authenticated = True
                     st.session_state.user = username
+                    st.session_state.history_loaded = False
                     st.rerun()
                 else:
-                    st.error("Invalid username or password")
+                    st.error(message)
 
         else:
             if st.button("Create Account", use_container_width=True):
@@ -182,15 +190,22 @@ if not st.session_state.authenticated:
     login_ui()
     st.stop()
 
-if "user" in st.session_state:
-    chat_history = load_chat_history(st.session_state.user, db_session)
+if "user" in st.session_state and "history_loaded" not in st.session_state:
+
+    chat_history = load_chat_history(
+        st.session_state.user,
+        db_session
+    )
 
     st.session_state.messages = [
         {
             "role": chat.role,
             "content": chat.message
-        } for chat in chat_history
+        }
+        for chat in chat_history
     ]
+
+    st.session_state.history_loaded = True
 
 with st.sidebar:
     if "user" in st.session_state:
@@ -222,7 +237,7 @@ with st.sidebar:
     st.markdown("---")
 
 
-    if st.button("🗑️ Clear Chat", use_container_width=True):
+    if st.button(" Clear Chat", use_container_width=True):
         st.session_state.messages = []
         st.rerun()
 
@@ -233,14 +248,13 @@ with st.sidebar:
         st.session_state.authenticated = False
         st.session_state.messages = []
         st.session_state.pop("user", None)
+        st.session_state.pop("history_loaded", None)
+
         st.rerun()
 
 st.title("🧠 EKA")
 st.caption("Ask questions about your database or documents — I'll figure out where to look.")
 st.markdown("---")
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
 if not st.session_state.messages:
     st.markdown("### 👋 Welcome!")
 
