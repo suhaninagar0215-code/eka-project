@@ -31,10 +31,48 @@ def login_ui():
     col1, col2, col3 = st.columns([1, 1.5, 1])
 
     with col2:
-        st.markdown('<div class="login-container">', unsafe_allow_html=True)
+        st.markdown(
+            '<div class="login-container">',
+            unsafe_allow_html=True
+        )
 
-        st.markdown('<div class="login-title">🧠 EKA</div>', unsafe_allow_html=True)
-        st.markdown('<div class="login-subtitle">Enterprise Knowledge Assistant</div>', unsafe_allow_html=True)
+        st.markdown("""
+<div style="text-align:center; margin-bottom:16px;">
+  <div style="display:inline-flex; align-items:center; gap:12px;">
+    <div style="width:44px; height:44px; animation:hex-float 4s ease-in-out infinite;">
+      <svg width="44" height="44" viewBox="0 0 64 64" fill="none">
+        <defs>
+          <linearGradient id="hg1l" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#a78bfa"/>
+          </linearGradient>
+          <linearGradient id="hg2l" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#7c3aed"/>
+          </linearGradient>
+        </defs>
+        <polygon class="hex-border" points="32,4 56,18 56,46 32,60 8,46 8,18" fill="none" stroke="url(#hg1l)" stroke-width="1.5" stroke-dasharray="6 3"/>
+        <polygon points="32,11 51,22 51,42 32,53 13,42 13,22" fill="url(#hg2l)" opacity="0.15"/>
+        <polygon points="32,11 51,22 51,42 32,53 13,42 13,22" fill="none" stroke="url(#hg1l)" stroke-width="1"/>
+        <line x1="32" y1="22" x2="32" y2="14" stroke="#c4b5fd" stroke-width="1" opacity="0.7"/>
+        <line x1="32" y1="22" x2="22" y2="28" stroke="#c4b5fd" stroke-width="1" opacity="0.7"/>
+        <line x1="32" y1="22" x2="42" y2="28" stroke="#c4b5fd" stroke-width="1" opacity="0.7"/>
+        <line x1="22" y1="28" x2="22" y2="38" stroke="#a78bfa" stroke-width="1" opacity="0.6"/>
+        <line x1="42" y1="28" x2="42" y2="38" stroke="#a78bfa" stroke-width="1" opacity="0.6"/>
+        <line x1="22" y1="38" x2="32" y2="44" stroke="#c4b5fd" stroke-width="1" opacity="0.7"/>
+        <line x1="42" y1="38" x2="32" y2="44" stroke="#c4b5fd" stroke-width="1" opacity="0.7"/>
+        <circle cx="32" cy="22" r="3" fill="#ffffff" opacity="0.9"/>
+        <circle class="dp"  cx="22" cy="28" r="2"   fill="#c4b5fd"/>
+        <circle class="dp2" cx="42" cy="28" r="2"   fill="#c4b5fd"/>
+        <circle class="dp3" cx="22" cy="38" r="2"   fill="#a78bfa"/>
+        <circle class="dp"  cx="42" cy="38" r="2"   fill="#a78bfa"/>
+        <circle class="dp2" cx="32" cy="44" r="2.5" fill="#c4b5fd"/>
+        <circle class="dp3" cx="32" cy="14" r="2"   fill="#ffffff" opacity="0.8"/>
+      </svg>
+    </div>
+    <div style="font-size:38px; font-weight:700; background:linear-gradient(135deg,#ffffff,#e0d7ff,#c4b5fd,#a78bfa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; letter-spacing:5px; line-height:1;">EKA</div>
+  </div>
+  <div style="font-size:11px; color:rgba(255,255,255,0.5); letter-spacing:2.5px; margin-top:8px; text-transform:uppercase;">Enterprise Knowledge Assistant</div>
+</div>
+""", unsafe_allow_html=True)
 
         option = st.radio(
             "Select Option",
@@ -71,116 +109,201 @@ def login_ui():
 
 st.markdown("""
 <style>
-    [data-testid="stAppViewContainer"] {
-        background: linear-gradient(135deg, #f9fafb, #f1f5f9);
-        background-attachment: fixed;
-    }
 
-    .login-title {
-        font-size: 32px;
-        font-weight: 700;
-        margin-bottom: 5px;
-    }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
-    .login-subtitle {
-        font-size: 14px;
-        opacity: 0.8;
-        margin-bottom: 25px;
-    }
+html, body, [class*="css"] {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 14px !important;
+    color: white !important;
+}
+            
+[data-testid="stChatMessage"] p,
+[data-testid="stChatMessage"] li,
+[data-testid="stChatMessage"] ol,
+[data-testid="stChatMessage"] ul,
+[data-testid="stChatMessage"] span,
+[data-testid="stChatMessage"] div {
+    color: white !important;
+}
 
-    .stTextInput input {
-        border-radius: 12px;
-        padding: 12px;
-        border: none;
-    }
+[data-testid="stMarkdownContainer"] p,
+[data-testid="stMarkdownContainer"] li,
+[data-testid="stMarkdownContainer"] strong {
+    color: white !important;
+}
 
-    .stButton button {
-        border-radius: 12px;
-        height: 48px;
-        font-weight: 600;
-        background: white;
-        color: #333;
-    }
+header[data-testid="stHeader"] {
+    display: none;
+}
 
-    .stRadio > div {
-        justify-content: center;
-    }
+footer {
+    display: none;
+}
+.orb {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #c084fc, #7c3aed, #4c1d95);
+    box-shadow:
+        0 0 20px #a855f7,
+        0 0 40px #7c3aed,
+        0 0 60px #6d28d9;
+    animation: pulse 3s ease-in-out infinite, float 4s ease-in-out infinite;
+    margin: 0 auto 12px auto;
+}
 
-    [data-testid="stDecoration"] {
-        display: none;
+@keyframes pulse {
+    0%, 100% {
+        box-shadow: 0 0 20px #a855f7, 0 0 40px #7c3aed, 0 0 60px #6d28d9;
+        transform: scale(1);
     }
+    50% {
+        box-shadow: 0 0 30px #c084fc, 0 0 60px #a855f7, 0 0 90px #7c3aed;
+        transform: scale(1.08);
+    }
+}
 
-    [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) {
-        flex-direction: row-reverse;
-        text-align: right;
-    }
+@keyframes float {
+    0%, 100% { transform: translateY(0px) scale(1); }
+    50% { transform: translateY(-8px) scale(1.08); }
+}
+.stApp {
+    background: linear-gradient(
+        135deg,
+        #140021,
+        #2c0052,
+        #4b0082
+    );
+}
 
-    [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) .stMarkdown {
-        text-align: right;
-    }
+section[data-testid="stSidebar"] {
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(18px);
+}
+            
+section[data-testid="stSidebar"] * {
+    color: white !important;
+}
 
-    [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) {
-        background-color: #f0f7ff;
-        border-radius: 18px 18px 4px 18px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        padding: 12px 16px;
-        margin-left: 20%;
-    }
+section[data-testid="stSidebar"] .stButton button {
+    background: rgba(255,255,255,0.08) !important;
+    color: white !important;
+    border-radius: 10px;
+}
 
-    [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-assistant"]) {
-        background-color: #ffffff;
-        border-radius: 18px 18px 18px 4px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        padding: 12px 16px;
-        margin-right: 20%;
-        border: 1px solid #f0f0f0;
-    }
-    .sql-badge {
-        background-color: #1f77b4;
-        color: white;
-        padding: 2px 10px;
-        border-radius: 12px;
-        font-size: 12px;
-        font-weight: bold;
-    }
-    .rag-badge {
-        background-color: #2ca02c;
-        color: white;
-        padding: 2px 10px;
-        border-radius: 12px;
-        font-size: 12px;
-        font-weight: bold;
-    }
-    .error-badge {
-        background-color: #d62728;
-        color: white;
-        padding: 2px 10px;
-        border-radius: 12px;
-        font-size: 12px;
-        font-weight: bold;
-    }
-    .source-box {
-        background-color: #f0f2f6;
-        border-left: 3px solid #1f77b4;
-        padding: 8px 12px;
-        border-radius: 4px;
-        font-size: 13px;
-        margin-top: 8px;
-    }
-    .router-box {
-        background-color: #fafafa;
-        border: 1px solid #e0e0e0;
-        border-radius: 6px;
-        padding: 4px 10px;
-        font-size: 11px;
-        color: #888;
-        margin-bottom: 6px;
-        display: inline-block;
-    }
+section[data-testid="stSidebar"] .stButton button:hover {
+    background: linear-gradient(
+        90deg,
+        #ff7a18,
+        #ff3cac
+    ) !important;
+    color: white !important;
+}
 
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
+.header {
+    text-align: center;
+    padding: 14px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 14px;
+}
+            
+.header h1 {
+    font-size: 22px !important;
+    color: white !important;
+}
 
+.header p {
+    font-size: 13px !important;
+    color: rgba(255,255,255,0.85) !important;
+}
+
+.login-container * {
+    color: white !important;
+}
+
+.stTextInput input {
+    background: rgba(255,255,255,0.08) !important;
+    border-radius: 12px !important;
+    border: none !important;
+    color: white !important;
+}
+
+[data-testid="stBottom"] {
+    background: #1a0035 !important;
+}
+
+[data-testid="stBottomBlockContainer"] {
+    background: #1a0035 !important;
+    padding-bottom: 10px !important;
+}
+[data-testid="stChatInputContainer"] {
+    background: #1a0035 !important;
+    border-top: none !important;
+    padding: 10px 16px !important;
+}
+
+[data-testid="stChatInput"] {
+    background: transparent !important;
+}
+
+[data-testid="stChatInput"] textarea {
+    background: rgba(255,255,255,0.08) !important;
+    color: black;
+    border-radius: 14px !important;
+    border: none !important;
+}
+
+[data-testid="stChatInput"] button {
+    background: linear-gradient(
+        90deg,
+        #ff7a18,
+        #ff3cac
+    ) !important;
+    border-radius: 10px !important;
+}
+            
+.user-message {
+    background: linear-gradient(
+        90deg,
+        #ff7a18,
+        #ff3cac
+    );
+    padding: 10px 14px;
+    border-radius: 14px;
+    margin-left: 35%;
+}
+
+.bot-message {
+    background: rgba(255,255,255,0.08);
+    padding: 10px 14px;
+    border-radius: 14px;
+    margin-right: 35%;
+    color: white !important;
+}
+
+.sql-badge {
+    background: #6c63ff;
+    font-size: 10px;
+}
+
+.rag-badge {
+    background: #0c9a7;
+    font-size: 10px;
+}
+            
+.error-badge {
+    background: #ff4d6d;
+    font-size: 10px;
+}
+
+.source-box {
+    background: rgba(255,255,255,0.05);
+    border-left: 2px solid #6c63ff;
+}
+#MainMenu {
+    visibility: hidden;
+}
 </style>
 """, unsafe_allow_html=True)
 if "authenticated" not in st.session_state:
@@ -210,29 +333,29 @@ if "user" in st.session_state and "history_loaded" not in st.session_state:
 with st.sidebar:
     if "user" in st.session_state:
         st.markdown(f"👤 Logged in as: **{st.session_state.user}**")
-    st.image("https://img.icons8.com/color/96/brain.png", width=50)
     st.title("Enterprise Knowledge Assistant")
     st.markdown("---")
 
-    st.markdown("### How it works")
-    st.markdown("""
-    - 🗄️ **SQL questions** → Database
-    - 📄 **Document questions** → Knowledge Base
-    - 🔀 **Router** decides automatically
-    """)
+    st.markdown("### 💡 Try these questions")
 
-    st.markdown("---")
-    if st.button("Show top 5 products"):
-        st.session_state.messages.append({"role": "user", "content": "Show top 5 products"})
+    if st.button("Top 5 highest paid employees"):
+        st.session_state.messages.append({"role": "user", "content": "Top 5 highest paid employees"})
         st.rerun()
-    if st.button("How many customers?"):
-        st.session_state.messages.append({"role": "user", "content": "How many customers?"})
+
+    if st.button("Average salary per department"):
+        st.session_state.messages.append({"role": "user", "content": "Average salary per department"})
         st.rerun()
-    if st.button("What is leave policy?"):
-        st.session_state.messages.append({"role": "user", "content": "What is the leave policy?"})
+
+    if st.button("Employees hired after 2022"):
+        st.session_state.messages.append({"role": "user", "content": "Employees hired after 2022"})
         st.rerun()
-    if st.button("Does the company offer bonuses?"):
-        st.session_state.messages.append({"role": "user", "content": "Does the company offer bonuses??"})
+ 
+    if st.button("Which department pays highest salary"):
+        st.session_state.messages.append({"role": "user", "content": "Which department pays highest salary"})
+        st.rerun()
+
+    if st.button("Explain salary policy"):
+        st.session_state.messages.append({"role": "user", "content": "Explain salary policy"})
         st.rerun()
     st.markdown("---")
 
@@ -252,43 +375,81 @@ with st.sidebar:
 
         st.rerun()
 
-st.title("🧠 EKA")
-st.caption("Ask questions about your database or documents — I'll figure out where to look.")
-st.markdown("---")
-if not st.session_state.messages:
-    st.markdown("### 👋 Welcome!")
+st.markdown("""
+<div class="header">
+  <div style="display:inline-block; text-align:center;">
+    <div style="display:inline-flex; align-items:center; gap:12px;">
+      <div style="position:relative; width:44px; height:44px; flex-shrink:0; animation:hex-float 4s ease-in-out infinite;">
+        <svg width="44" height="44" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <style>
+            .hex-border { animation: hex-spin 8s linear infinite; transform-origin: 32px 32px; }
+            .dp  { animation: dot-blink 2s ease-in-out infinite; }
+            .dp2 { animation: dot-blink 2s ease-in-out infinite 0.5s; }
+            .dp3 { animation: dot-blink 2s ease-in-out infinite 1s; }
+            @keyframes hex-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+            @keyframes dot-blink { 0%,100% { opacity:0.3; } 50% { opacity:1; } }
+            @keyframes hex-float { 0%,100% { transform:translateY(0px); } 50% { transform:translateY(-5px); } }
+          </style>
+          <defs>
+            <linearGradient id="hg1" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#a78bfa"/>
+            </linearGradient>
+            <linearGradient id="hg2" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#7c3aed"/>
+            </linearGradient>
+          </defs>
+          <polygon class="hex-border" points="32,4 56,18 56,46 32,60 8,46 8,18" fill="none" stroke="url(#hg1)" stroke-width="1.5" stroke-dasharray="6 3"/>
+          <polygon points="32,11 51,22 51,42 32,53 13,42 13,22" fill="url(#hg2)" opacity="0.15"/>
+          <polygon points="32,11 51,22 51,42 32,53 13,42 13,22" fill="none" stroke="url(#hg1)" stroke-width="1"/>
+          <line x1="32" y1="22" x2="32" y2="14" stroke="#c4b5fd" stroke-width="1" opacity="0.7"/>
+          <line x1="32" y1="22" x2="22" y2="28" stroke="#c4b5fd" stroke-width="1" opacity="0.7"/>
+          <line x1="32" y1="22" x2="42" y2="28" stroke="#c4b5fd" stroke-width="1" opacity="0.7"/>
+          <line x1="22" y1="28" x2="22" y2="38" stroke="#a78bfa" stroke-width="1" opacity="0.6"/>
+          <line x1="42" y1="28" x2="42" y2="38" stroke="#a78bfa" stroke-width="1" opacity="0.6"/>
+          <line x1="22" y1="38" x2="32" y2="44" stroke="#c4b5fd" stroke-width="1" opacity="0.7"/>
+          <line x1="42" y1="38" x2="32" y2="44" stroke="#c4b5fd" stroke-width="1" opacity="0.7"/>
+          <circle cx="32" cy="22" r="3" fill="#ffffff" opacity="0.9"/>
+          <circle class="dp"  cx="22" cy="28" r="2"   fill="#c4b5fd"/>
+          <circle class="dp2" cx="42" cy="28" r="2"   fill="#c4b5fd"/>
+          <circle class="dp3" cx="22" cy="38" r="2"   fill="#a78bfa"/>
+          <circle class="dp"  cx="42" cy="38" r="2"   fill="#a78bfa"/>
+          <circle class="dp2" cx="32" cy="44" r="2.5" fill="#c4b5fd"/>
+          <circle class="dp3" cx="32" cy="14" r="2"   fill="#ffffff" opacity="0.8"/>
+        </svg>
+      </div>
+      <div style="font-size:38px; font-weight:700; background:linear-gradient(135deg,#ffffff,#e0d7ff,#c4b5fd,#a78bfa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; letter-spacing:5px; line-height:1;">EKA</div>
+    </div>
+    <div style="font-size:11px; color:rgba(255,255,255,0.5); letter-spacing:2.5px; margin-top:8px; text-transform:uppercase;">Enterprise Knowledge Assistant</div>
+  </div>
+</div>
+""", unsafe_allow_html=True)
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        if message["role"] == "assistant":
 
-            router_method = message.get("router_method", "")
-            if router_method:
-                st.markdown(
-                    f'<div class="router-box">🔀 Routed via: {router_method}</div>',
-                    unsafe_allow_html=True
-                )
+for msg in st.session_state.messages:
+    if msg["role"] == "user":
+        st.markdown(f'<div class="user-message">{msg["content"]}</div>', unsafe_allow_html=True)
+    else:
+        content_html = msg["content"]
 
-            source_type = message.get("source_type", "")
-            if source_type == "sql":
-                st.markdown("### 🗄️ SQL Result")
-            elif source_type == "rag":
-                st.markdown("### 📄 Document Answer")
-            elif source_type == "error":
-                st.markdown("### ⚠️ Error")
-            st.markdown(message["content"])
+        if msg.get("router_method"):
+            content_html += f'<div class="router-box">🔀 Routed via: {msg["router_method"]}</div>'
 
-            if message.get("sources"):
-                sources_text = " • ".join(message["sources"])
-                st.markdown(
-                    f'<div class="source-box">📎 Sources: {sources_text}</div>',
-                    unsafe_allow_html=True
-                )
-        else:
-            st.markdown(message["content"])
+        source_type = msg.get("source_type", "")
+        if source_type == "sql":
+            content_html += '<span class="sql-badge">🗄️ SQL DATABASE</span>'
+        elif source_type == "rag":
+            content_html += '<span class="rag-badge">📄 DOCUMENTS</span>'
+        elif source_type == "error":
+            content_html += '<span class="error-badge">⚠️ ERROR</span>'
+
+        if msg.get("sources"):
+            for src in msg["sources"]:
+                content_html += f'<div class="source-box">📄 {src}</div>'
+
+        st.markdown(f'<div class="bot-message">{content_html}</div>', unsafe_allow_html=True)
 
 if prompt := st.chat_input("Ask me anything about your data or documents..."):
 
