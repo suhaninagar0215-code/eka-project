@@ -171,9 +171,9 @@ footer {
 .stApp {
     background: linear-gradient(
         135deg,
-        #140021,
-        #2c0052,
-        #4b0082
+        #080010,
+        #150028,
+        #2a0050
     );
 }
 
