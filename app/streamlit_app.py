@@ -9,16 +9,11 @@ import streamlit as st
 from backend.router.query_router import route_question
 from backend.auth.auth_service import authenticate_user, register_user
 from backend.sql.services.chat_history_service import save_message, load_chat_history
-from backend.sql.sql_database import get_db_session, init_db
+from backend.sql.sql_database import init_db
 
 if "db_initialized" not in st.session_state:
     init_db()
     st.session_state.db_initialized = True
-
-if "db_session" not in st.session_state:
-    st.session_state.db_session = get_db_session()
-
-db_session = st.session_state.db_session
 
 st.set_page_config(
     page_title="EKA",
@@ -166,11 +161,7 @@ section[data-testid="stSidebar"] .stButton button {
 }
 
 section[data-testid="stSidebar"] .stButton button:hover {
-    background: linear-gradient(
-        90deg,
-        #ff7a18,
-        #ff3cac
-    ) !important;
+    background: linear-gradient(90deg, #ffffff, #c4b5fd) !important;
     color: white !important;
 }
 
@@ -228,20 +219,12 @@ section[data-testid="stSidebar"] .stButton button:hover {
 }
 
 [data-testid="stChatInput"] button {
-    background: linear-gradient(
-        90deg,
-        #ff7a18,
-        #ff3cac
-    ) !important;
+    background: linear-gradient(90deg, #ffffff, #c4b5fd) !important;
     border-radius: 10px !important;
 }
             
 .user-message {
-    background: linear-gradient(
-        90deg,
-        #ff7a18,
-        #ff3cac
-    );
+    background: linear-gradient(90deg, #ffffff, #c4b5fd) !important;
     padding: 10px 14px;
     border-radius: 14px;
     margin-left: 35%;
@@ -290,7 +273,6 @@ if "user" in st.session_state and "history_loaded" not in st.session_state:
 
     chat_history = load_chat_history(
         st.session_state.user,
-        db_session
     )
 
     st.session_state.messages = [
@@ -327,8 +309,8 @@ with st.sidebar:
         st.session_state.messages.append({"role": "user", "content": "Which department pays highest salary"})
         st.rerun()
 
-    if st.button("Explain salary policy"):
-        st.session_state.messages.append({"role": "user", "content": "Explain salary policy"})
+    if st.button("What is the leave policy?"):
+        st.session_state.messages.append({"role": "user", "content": "What is the leave policy"})
         st.rerun()
     st.markdown("---")
 
@@ -430,7 +412,7 @@ if prompt := st.chat_input("Ask me anything about your data or documents..."):
         "role": "user",
         "content": prompt
     })
-    save_message(st.session_state.user, "user", prompt, db_session)
+    save_message(st.session_state.user, "user", prompt)
     with st.chat_message("user"):
         st.markdown(prompt)
 
@@ -472,4 +454,7 @@ if prompt := st.chat_input("Ask me anything about your data or documents..."):
         "sources": result.get("sources", []),
         "router_method": result.get("router_method", "")  
     })
-    save_message(st.session_state.user, "assistant", result["answer"], db_session)
+    save_message(st.session_state.user, "user", prompt)
+    save_message(st.session_state.user, "assistant", result["answer"])
+
+    chat_history = load_chat_history(st.session_state.user)
