@@ -140,34 +140,7 @@ header[data-testid="stHeader"] {
 footer {
     display: none;
 }
-.orb {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, #c084fc, #7c3aed, #4c1d95);
-    box-shadow:
-        0 0 20px #a855f7,
-        0 0 40px #7c3aed,
-        0 0 60px #6d28d9;
-    animation: pulse 3s ease-in-out infinite, float 4s ease-in-out infinite;
-    margin: 0 auto 12px auto;
-}
-
-@keyframes pulse {
-    0%, 100% {
-        box-shadow: 0 0 20px #a855f7, 0 0 40px #7c3aed, 0 0 60px #6d28d9;
-        transform: scale(1);
-    }
-    50% {
-        box-shadow: 0 0 30px #c084fc, 0 0 60px #a855f7, 0 0 90px #7c3aed;
-        transform: scale(1.08);
-    }
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0px) scale(1); }
-    50% { transform: translateY(-8px) scale(1.08); }
-}
+            
 .stApp {
     background: linear-gradient(
         135deg,
