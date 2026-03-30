@@ -417,8 +417,16 @@ if prompt := st.chat_input("Ask me anything about your data or documents..."):
         st.markdown(prompt)
 
     with st.chat_message("assistant"):
-        with st.spinner("Thinking..."):
-            result = route_question(prompt)
+        response_placeholder = st.empty()
+
+        response_placeholder.markdown("Thinking...")
+
+        result = route_question(prompt)  
+
+        full_response = ""
+        for word in result["answer"].split():
+            full_response += word + " "
+            response_placeholder.markdown(full_response)
 
         router_method = result.get("router_method", "")
         if router_method:
@@ -454,7 +462,6 @@ if prompt := st.chat_input("Ask me anything about your data or documents..."):
         "sources": result.get("sources", []),
         "router_method": result.get("router_method", "")  
     })
-    save_message(st.session_state.user, "user", prompt)
     save_message(st.session_state.user, "assistant", result["answer"])
 
     chat_history = load_chat_history(st.session_state.user)
