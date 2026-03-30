@@ -30,7 +30,7 @@ def get_llm():
         deployment_name=os.getenv("AZURE_OPENAI_DEPLOYMENT_4O"),
         api_version=os.getenv("OPENAI_API_VERSION"),
         temperature=0,
-        max_tokens=2000      
+        max_tokens=2000 
     )
 
 def get_mini_llm():
@@ -40,7 +40,7 @@ def get_mini_llm():
         deployment_name=os.getenv("AZURE_OPENAI_DEPLOYMENT_MINI"),
         api_version=os.getenv("OPENAI_API_VERSION"),
         temperature=0,
-        max_tokens=1000      
+        max_tokens=1000  
     )
 
 def get_llm_by_name(model_name: str):

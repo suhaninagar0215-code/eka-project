@@ -321,7 +321,6 @@ with st.sidebar:
 
     st.markdown("---")
     st.caption("Enterprise Knowledge Assistant v1.0")
-    debug_mode = st.checkbox("🐞 Debug Mode")
     if st.button("🚪 Logout", use_container_width=True):
         st.session_state.authenticated = False
         st.session_state.messages = []
