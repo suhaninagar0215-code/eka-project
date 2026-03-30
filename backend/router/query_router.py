@@ -225,10 +225,11 @@ def route_question(question: str) -> dict:
 
 if __name__ == "__main__":
     test_questions = [
-        "Show me top 5 products by price",            
-        "What is the leave policy?",                  
-        "How many customers do we have?",             
-        "Does the company offer bonuses?",            
+        "Show top 5 highest paid employees",
+        "Which department has most employees?",
+        "Show current department of all employees",
+        "Who has highest salary?",
+        "List employees hired after 2021"            
         "What are the working hours?",                
         "What is the weather today?",                 
     ]
