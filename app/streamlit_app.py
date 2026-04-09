@@ -7,7 +7,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 import streamlit as st
-from backend.router.query_router import route_question
+import requests
 from backend.auth.auth_service import authenticate_user, register_user
 from backend.sql.services.chat_history_service import save_message, load_chat_history
 from backend.sql.sql_database import init_db
@@ -421,7 +421,15 @@ if prompt := st.chat_input("Ask me anything about your data or documents..."):
 
         response_placeholder.markdown("Thinking...")
 
-        result = route_question(prompt)  
+        response = requests.post(
+            "http://127.0.0.1:8000/ask",
+            json={
+                "question": prompt,
+                "user": st.session_state.user
+          }
+        )
+
+        result = response.json()  
 
         full_response = ""
         for word in result["answer"].split():
@@ -446,14 +454,10 @@ if prompt := st.chat_input("Ask me anything about your data or documents..."):
             st.markdown('<span class="error-badge">⚠️ ERROR</span>',
                        unsafe_allow_html=True)
 
-        st.markdown(result["answer"])
-
         if result.get("sources"):
-            for src in result["sources"]:
-                st.markdown(
-                    f'<div class="source-box">📄 {src}</div>',
-                    unsafe_allow_html=True
-                )
+            with st.expander(f"📎 Sources ({len(result['sources'])})"):
+                for src in result["sources"]:
+                    st.markdown(f"• {src}")
 
     st.session_state.messages.append({
         "role": "assistant",
