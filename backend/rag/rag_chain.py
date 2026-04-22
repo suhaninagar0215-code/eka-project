@@ -11,18 +11,20 @@ def get_rag_response(query: str, vectordb, model: str = "gpt-4o-mini") -> dict:
             "sources": [],
             "context_used": []
         }
+    
+
     retriever = vectordb.as_retriever(
-        search_type="mmr",          
+        search_type="mmr",
         search_kwargs={
-            "k": 8,                    
-            "fetch_k": 40,             
-            "lambda_mult": 0.5,        
+            "k":12,
+            "fetch_k": 40,
+            "lambda_mult": 0.5
         }
     )
 
     docs = retriever.invoke(query)
 
-    print("\n🔍 Retrieved Documents:\n")
+    print("\n Retrieved Documents:\n")
     for i, doc in enumerate(docs):
         print(f"\n--- Doc {i+1} ---")
         print(doc.page_content[:500])
@@ -104,3 +106,9 @@ if __name__ == "__main__":
     print(f"\nSources:")
     for s in result['sources']:
         print(f"  - {s}")
+
+    docs = db.similarity_search("internship policy", k=8)
+
+    for d in docs:
+        print("\n---")
+        print(d.metadata)

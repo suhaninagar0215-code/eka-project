@@ -33,7 +33,31 @@ RAG_KEYWORDS = [
     "working hours", "overtime",
     "dress code", "ethics",
     "promotion", "increment",
-    "does the company"
+    "does the company",
+    # Internship-specific additions
+    "internship", "intern", "interns",
+    "stipend",
+    "internship duration", "internship period",
+    "internship certificate", "completion certificate",
+    "internship completion",
+    "mentor", "supervisor",
+    "on-site", "onsite",
+    "apprentice", "trainee",
+    "learning outcome", "learning objectives",
+    "internship schedule",
+    "internship policy",
+    "internship agreement",
+    "internship termination",
+    "internship extension",
+    "educational", "skill development",
+    "employment consideration",
+    "guaranteed employment",
+    "internship working hours",
+    "internship leave",
+    "internship conduct",
+    "data protection training",
+    "internship eligibility",
+    "can i get a job", "job after internship"
 ]
 
 
@@ -80,11 +104,12 @@ DATA SOURCES:
    - benefits
    - company rules
    - HR guidelines
+   - internship policy
    Use RAG for:
    - policy questions
    - HR rules
    - benefits explanation
-
+   - internship questions
 RULE:
 - If question involves data (employees, salary, department) → SQL
 - If question involves policy or explanation → RAG
@@ -163,7 +188,7 @@ def get_vectordb():
 
 
 #  Main Router 
-def route_question(question: str) -> dict:
+def route_question(question: str, username: str = "default_user") -> dict:
 
     if not question or not question.strip():
         return {

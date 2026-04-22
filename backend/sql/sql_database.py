@@ -33,7 +33,7 @@ def get_db_engine():
         port=1433,
         database=os.getenv("SQL_DATABASE"),
         query={
-            "driver": "ODBC Driver 17 for SQL Server",
+            "driver": "ODBC Driver 18 for SQL Server",
             "TrustServerCertificate": "yes",
         }
     )
